@@ -185,7 +185,7 @@ export function RankingPage() {
           <div className="flex items-center gap-3 mb-2">
             <Trophy className="text-slate-400" size={24} />
             <h1 className="text-3xl font-bold tracking-tight">
-              {department || '全部部门'} 面试实时排名
+              {department || '全部部门'} 实时排名
             </h1>
           </div>
           <p className="text-slate-500 text-sm flex gap-3">

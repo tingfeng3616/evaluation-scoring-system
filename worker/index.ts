@@ -527,7 +527,7 @@ const requireBoundScorer = async (c: ApiContext) => {
     throw new HTTPException(403, { message: '当前设备绑定的身份与口令不一致' })
   }
   if (await isCandidateName(c.env.DB, scorerContext.binding.name)) {
-    throw new HTTPException(403, { message: '参加面试的候选人不能参与评分，请联系现场管理员处理' })
+    throw new HTTPException(403, { message: '参评对象不能参与评分，请联系现场管理员处理' })
   }
 
   await c.env.DB
@@ -671,7 +671,7 @@ app.post('/api/auth/bind-name', async (c) => {
 
   if (binding && binding.status === 'active') {
     if (await isCandidateName(c.env.DB, binding.name)) {
-      throw new HTTPException(403, { message: '参加面试的候选人不能参与评分，请联系现场管理员处理' })
+      throw new HTTPException(403, { message: '参评对象不能参与评分，请联系现场管理员处理' })
     }
     if (binding.name !== name || binding.role !== session.role) {
       throw new HTTPException(409, { message: '该设备已经绑定过姓名，请联系管理员解绑' })
@@ -690,7 +690,7 @@ app.post('/api/auth/bind-name', async (c) => {
     })
 
     throw new HTTPException(409, {
-      message: '参加面试的候选人不能参与评分，请填写评分人员本人姓名',
+      message: '参评对象不能参与评分，请填写评分人员本人姓名',
     })
   }
 
@@ -877,7 +877,7 @@ const submitScoreForCandidate = async (c: ApiContext, candidateId: number, paylo
   const candidate = await fetchCandidateById(c.env.DB, candidateId)
 
   if (!candidate) {
-    throw new HTTPException(404, { message: '候选人不存在' })
+    throw new HTTPException(404, { message: '参评对象不存在' })
   }
 
   const existingScore = await c.env.DB
@@ -886,7 +886,7 @@ const submitScoreForCandidate = async (c: ApiContext, candidateId: number, paylo
     .first<{ id: number; discarded_at: string | null }>()
 
   if (existingScore && !existingScore.discarded_at) {
-    throw new HTTPException(409, { message: '你已经给当前候选人提交过评分了' })
+    throw new HTTPException(409, { message: '你已经给当前对象提交过评分了' })
   }
 
   const breakdown = computeScoreBreakdown(payload)
@@ -986,7 +986,7 @@ app.post('/api/score/current', zValidator('json', scoreSubmissionSchema), async 
   const candidate = await fetchActiveCandidate(c.env.DB)
 
   if (!candidate) {
-    throw new HTTPException(409, { message: '当前还没有设置正在面试的候选人' })
+    throw new HTTPException(409, { message: '当前还没有设置正在评分的对象' })
   }
 
   return submitScoreForCandidate(c, candidate.id, parseScorePayload(c.req.valid('json')))
@@ -995,7 +995,7 @@ app.post('/api/score/current', zValidator('json', scoreSubmissionSchema), async 
 app.post('/api/score/candidate/:candidateId', zValidator('json', scoreSubmissionSchema), async (c) => {
   const candidateId = Number(c.req.param('candidateId'))
   if (!Number.isInteger(candidateId) || candidateId <= 0) {
-    throw new HTTPException(400, { message: '候选人参数不正确' })
+    throw new HTTPException(400, { message: '参评对象参数不正确' })
   }
 
   return submitScoreForCandidate(c, candidateId, parseScorePayload(c.req.valid('json')))
@@ -1086,12 +1086,12 @@ app.get('/api/rankings/candidate-scores', async (c) => {
   const candidateId = Number(c.req.query('candidateId'))
 
   if (!Number.isInteger(candidateId) || candidateId <= 0) {
-    throw new HTTPException(400, { message: '候选人参数不正确' })
+    throw new HTTPException(400, { message: '参评对象参数不正确' })
   }
 
   const candidate = await fetchCandidateById(c.env.DB, candidateId)
   if (!candidate) {
-    throw new HTTPException(404, { message: '候选人不存在' })
+    throw new HTTPException(404, { message: '参评对象不存在' })
   }
 
   const result = await c.env.DB
@@ -1460,7 +1460,7 @@ app.put('/api/admin/active-candidate', zValidator('json', activeCandidateSchema)
 
   const candidate = await fetchCandidateById(c.env.DB, candidateId)
   if (!candidate) {
-    throw new HTTPException(404, { message: '候选人不存在' })
+    throw new HTTPException(404, { message: '参评对象不存在' })
   }
 
   if (existing?.candidate_id === candidateId) {

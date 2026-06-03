@@ -1,7 +1,8 @@
 {
-  "name": "interview-scoring-system",
+  "name": "evaluation-scoring-system",
   "private": false,
   "version": "1.0.0",
+  "description": "中英双语 Cloudflare 活动评审评分系统 / Bilingual Cloudflare evaluation scoring system",
   "type": "module",
   "scripts": {
     "dev": "concurrently \"npm:dev:api\" \"npm:dev:client\"",
@@ -9,8 +10,8 @@
     "dev:api": "wrangler dev --local --port 8787",
     "build": "tsc -b && vite build",
     "check": "vitest run",
-    "db:migrate:local": "wrangler d1 migrations apply interview-scoring --local",
-    "db:migrate:remote": "wrangler d1 migrations apply interview-scoring --remote",
+    "db:migrate:local": "wrangler d1 migrations apply evaluation-scoring --local",
+    "db:migrate:remote": "wrangler d1 migrations apply evaluation-scoring --remote",
     "lint": "eslint .",
     "preview": "vite preview"
   },

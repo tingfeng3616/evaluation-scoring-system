@@ -115,7 +115,7 @@ export function ScorePage() {
 
         if (shouldHoldPrevious) {
           setPendingCurrent(result)
-          setMessage(`管理员已切换到 #${nextCandidate.serialNo} ${nextCandidate.name}。当前候选人尚未提交，可先提交，也可放弃草稿切到下一位。`)
+          setMessage(`管理员已切换到 #${nextCandidate.serialNo} ${nextCandidate.name}。当前对象尚未提交，可先提交，也可放弃草稿切到下一位。`)
           return previous
         }
 
@@ -124,7 +124,7 @@ export function ScorePage() {
       })
       setError(null)
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '候选人信息加载失败')
+      setError(caught instanceof Error ? caught.message : '参评对象信息加载失败')
     }
   }, [auth])
 
@@ -209,9 +209,9 @@ export function ScorePage() {
       if (pendingCurrent) {
         setCurrent(pendingCurrent)
         setPendingCurrent(null)
-        setMessage('上一位评分已提交，已切换到管理员当前候选人。')
+        setMessage('上一位评分已提交，已切换到管理员当前对象。')
       } else {
-        setMessage('评分已提交，等待管理员切换下一位候选人。')
+        setMessage('评分已提交，等待管理员切换下一位对象。')
         await refreshCurrent()
       }
     } catch (caught) {
@@ -263,7 +263,7 @@ export function ScorePage() {
     setScores(emptyScoreInput())
     setQuickScore('')
     setActiveSectionIndex(0)
-    setMessage('已放弃当前页面草稿，切换到管理员当前候选人。')
+    setMessage('已放弃当前页面草稿，切换到管理员当前对象。')
     setError(null)
   }
 
@@ -313,7 +313,7 @@ export function ScorePage() {
         <div className="mx-auto flex min-h-screen max-w-md flex-col px-4 pb-10 pt-16">
           <div className="mb-8">
             <p className="mb-2 text-xs font-semibold tracking-[0.18em] text-teal-700 uppercase">评分端</p>
-            <h1 className="text-4xl font-bold tracking-tight text-slate-900">面试评分页</h1>
+            <h1 className="text-4xl font-bold tracking-tight text-slate-900">评审评分页</h1>
             <p className="mt-3 text-sm leading-6 text-slate-500">
               评委和部员从这里进入系统。输入对应口令后，再填写姓名绑定当前设备即可开始评分。
             </p>
@@ -381,7 +381,7 @@ export function ScorePage() {
                 />
                 <p className="mt-2 text-xs leading-5 text-slate-500">
                   同一个真实姓名只能绑定一台设备；如填错或被占用，请联系管理员处理。
-                  参加面试的候选人不能绑定评分端。
+                  参评对象不能绑定评分端。
                 </p>
               </div>
               <div className="flex flex-col gap-3">
@@ -527,7 +527,7 @@ export function ScorePage() {
           </>
         ) : (
           <div className="flex items-center h-8 text-slate-500 text-sm">
-            管理员还没有切到当前候选人
+            管理员还没有切到当前对象
           </div>
         )}
       </header>
@@ -628,8 +628,8 @@ export function ScorePage() {
         ) : (
           <div className="flex flex-col items-center justify-center h-48 text-center text-slate-500 space-y-2 mt-12">
             <UserRound size={48} className="text-slate-200 mb-2" />
-            <p>面试开始后</p>
-            <p>系统会自动显示候选人评分表</p>
+            <p>评审开始后</p>
+            <p>系统会自动显示当前对象评分表</p>
           </div>
         )}
       </main>
@@ -642,7 +642,7 @@ export function ScorePage() {
                 {message && <p className="text-xs text-teal-700 text-center">{message}</p>}
                 {error && <p className="text-xs text-red-600 text-center">{error}</p>}
                 {current?.alreadyScored && !message && (
-                  <p className="text-xs text-slate-500 text-center">已完成评分，等待管理员切换下一位候选人。</p>
+                  <p className="text-xs text-slate-500 text-center">已完成评分，等待管理员切换下一位对象。</p>
                 )}
               </div>
             )}
@@ -664,7 +664,7 @@ export function ScorePage() {
                   disabled={!current?.candidate || current.alreadyScored || submitting}
                   className="h-10 bg-slate-800 text-white rounded-md font-medium text-base flex justify-center items-center active:bg-slate-900 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed transition-colors shadow-sm"
                 >
-                  {submitting ? '提交中...' : current.alreadyScored ? '已提交该候选人评分' : '确认并提交'}
+                  {submitting ? '提交中...' : current.alreadyScored ? '已提交该对象评分' : '确认并提交'}
                 </button>
               ) : (
                 <button

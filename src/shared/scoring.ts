@@ -39,7 +39,7 @@ export const scoreSections: ScoreSection[] = [
     title: '一、仪容仪表与言行举止',
     totalMax: 15,
     items: [
-      { key: 'grooming_1', label: '着装整洁，符合面试场景', max: 6 },
+      { key: 'grooming_1', label: '着装整洁，符合评审场景', max: 6 },
       { key: 'grooming_2', label: '举止文明，姿态大方得体', max: 5 },
       { key: 'grooming_3', label: '神态从容，礼貌谦逊', max: 4 },
     ],

@@ -3,10 +3,10 @@ import fs from 'node:fs'
 import path from 'node:path'
 import * as XLSX from 'xlsx'
 
-const dbName = process.env.D1_DATABASE_NAME ?? 'interview-scoring'
+const dbName = process.env.D1_DATABASE_NAME ?? 'evaluation-scoring'
 const outputDir = path.resolve('outputs')
 const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
-const outputPath = path.join(outputDir, `interview-scoring-export-${timestamp}.xlsx`)
+const outputPath = path.join(outputDir, `evaluation-scoring-export-${timestamp}.xlsx`)
 
 const runSql = (sql) => {
   const compactSql = sql.replace(/\s+/g, ' ').trim()

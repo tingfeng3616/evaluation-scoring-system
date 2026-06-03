@@ -87,8 +87,8 @@ export function DisplayPage() {
             IS
           </div>
           <div>
-            <h1 className="text-4xl font-bold tracking-[0.1em] text-white">面试现场导视</h1>
-            <p className="text-slate-400 mt-2 text-xl tracking-wider">面试评分现场</p>
+            <h1 className="text-4xl font-bold tracking-[0.1em] text-white">评审现场导视</h1>
+            <p className="text-slate-400 mt-2 text-xl tracking-wider">活动评分现场</p>
           </div>
         </div>
         
@@ -104,7 +104,7 @@ export function DisplayPage() {
       {/* 主体左右分栏 */}
       <main className="flex-1 grid grid-cols-[2.5fr_1fr] min-h-0 overflow-hidden">
         
-        {/* 左侧区域：当前候选人为主 */}
+        {/* 左侧区域：当前对象为主 */}
         <section className="relative min-h-0 p-16 flex flex-col justify-center border-r border-white/10 bg-slate-900/30 overflow-hidden">
           {error && (
             <div className="absolute top-8 left-16 right-16 p-4 bg-red-950/50 border border-red-900 rounded-lg text-red-400 text-2xl text-center">
@@ -116,7 +116,7 @@ export function DisplayPage() {
             <div className="w-full max-w-5xl mx-auto">
               <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full border border-teal-500/30 bg-teal-500/10 text-teal-400 text-3xl font-medium mb-16 animate-pulse">
                 <span className="w-4 h-4 rounded-full bg-teal-400"></span>
-                正在面试
+                正在评分
               </div>
 
               <div className="flex items-baseline gap-8 mb-12">
@@ -177,7 +177,7 @@ export function DisplayPage() {
           ) : (
             <div className="flex flex-col items-center justify-center text-center h-full">
               <div className="text-[120px] font-bold tracking-tight text-white mb-8">等待开始</div>
-              <div className="text-[120px] font-bold tracking-tight text-slate-400">下一位面试</div>
+              <div className="text-[120px] font-bold tracking-tight text-slate-400">等待下一位</div>
               <div className="text-4xl text-slate-500 mt-16 tracking-widest">请评委和部员做好准备</div>
             </div>
           )}
@@ -214,7 +214,7 @@ export function DisplayPage() {
 
           <div className="h-px w-full bg-white/10 my-10 shrink-0"></div>
 
-          {/* 上一位候选人简报，视觉作大幅弱化 */}
+          {/* 上一位对象简报，视觉作大幅弱化 */}
           <div className="min-h-0 overflow-hidden opacity-60">
             <h3 className="text-2xl font-bold text-slate-600 mb-6 uppercase tracking-widest flex items-center gap-4">
               <Clock3 size={24} />
@@ -252,7 +252,7 @@ export function DisplayPage() {
                 </div>
               </div>
             ) : (
-              <div className="text-slate-600 text-2xl tracking-widest">暂无上一位候选人记录</div>
+              <div className="text-slate-600 text-2xl tracking-widest">暂无上一位记录</div>
             )}
           </div>
 

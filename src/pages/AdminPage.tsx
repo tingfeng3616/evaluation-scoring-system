@@ -118,7 +118,7 @@ export function AdminPage() {
         body: formData,
       })
 
-      setMessage(`已导入 ${response.importedCount} 位候选人。`)
+      setMessage(`已导入 ${response.importedCount} 位参评对象。`)
       setFile(null)
       await loadDashboard()
     } catch (caught) {
@@ -134,10 +134,10 @@ export function AdminPage() {
         method: 'PUT',
         body: JSON.stringify({ candidateId }),
       })
-      setMessage('当前面试候选人已切换。上一位候选人评分已锁定。')
+      setMessage('当前评分对象已切换。上一位对象评分已锁定。')
       await loadDashboard()
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '切换候选人失败')
+      setError(caught instanceof Error ? caught.message : '切换对象失败')
     }
   }
 
@@ -148,7 +148,7 @@ export function AdminPage() {
       await apiRequest('/api/admin/active-candidate', {
         method: 'DELETE',
       })
-      setMessage('已切换到等待开始状态。当前候选人的已提交评分已锁定。')
+      setMessage('已切换到等待开始状态。当前对象的已提交评分已锁定。')
       await loadDashboard()
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : '切换等待状态失败')
@@ -223,7 +223,7 @@ export function AdminPage() {
           <div>
             <p className="text-sm font-semibold text-teal-700 tracking-wider uppercase mb-1">Admin Interface</p>
             <h1 className="text-2xl font-bold text-slate-900">管理后台</h1>
-            <p className="text-sm text-slate-500 mt-2">此页面只供管理员导入名单、切换当前候选人和处理设备绑定。</p>
+            <p className="text-sm text-slate-500 mt-2">此页面只供管理员导入名单、切换当前对象和处理设备绑定。</p>
           </div>
           
           <form className="space-y-4" onSubmit={handleAdminLogin}>
@@ -256,8 +256,8 @@ export function AdminPage() {
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans h-screen overflow-hidden">
       <header className="sticky top-0 z-10 bg-slate-900 text-white px-6 py-3 flex justify-between items-center shrink-0 shadow-sm">
         <div className="flex items-center gap-3">
-          <h1 className="text-base font-medium tracking-wide">面试管理控制台</h1>
-          <span className="text-slate-500 text-sm">/ 面试室主控制</span>
+          <h1 className="text-base font-medium tracking-wide">评审管理控制台</h1>
+          <span className="text-slate-500 text-sm">/ 现场主控制</span>
         </div>
         <div className="flex gap-4 text-sm text-slate-300">
           <button className="hover:text-white flex items-center gap-1 transition-colors" onClick={() => void loadDashboard()}>
@@ -282,7 +282,7 @@ export function AdminPage() {
           <div className="p-4 border-b border-slate-200">
             <h2 className="font-bold text-slate-800 flex items-center gap-2">
               <Users size={16} className="text-slate-500" />
-              候选人队列
+              参评对象队列
             </h2>
           </div>
           
@@ -322,7 +322,7 @@ export function AdminPage() {
                   }`}
                   onClick={() => {
                     const actionText = candidate.isLocked ? '回溯到' : '切换到'
-                    if (!candidate.isActive && confirm(`确定要${actionText} #${candidate.serialNo} ${candidate.name} 吗？\n当前候选人的评分将被锁定。`)) {
+                    if (!candidate.isActive && confirm(`确定要${actionText} #${candidate.serialNo} ${candidate.name} 吗？\n当前对象的评分将被锁定。`)) {
                       void setActiveCandidate(candidate.id)
                     }
                   }}
@@ -331,9 +331,9 @@ export function AdminPage() {
                     <span className={`font-medium ${candidate.isActive ? 'text-teal-900' : candidate.isLocked ? 'text-slate-500 line-through decoration-slate-400' : 'text-slate-800'}`}>
                       #{candidate.serialNo} {candidate.name}
                     </span>
-                    {candidate.isActive && <span className="text-[10px] bg-teal-600 text-white px-1.5 py-0.5 rounded font-medium animate-pulse">面试中</span>}
+                    {candidate.isActive && <span className="text-[10px] bg-teal-600 text-white px-1.5 py-0.5 rounded font-medium animate-pulse">评分中</span>}
                     {candidate.isLocked && <span className="text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded">已锁分 / 可回溯</span>}
-                    {!candidate.isActive && !candidate.isLocked && <span className="text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded">待面试</span>}
+                    {!candidate.isActive && !candidate.isLocked && <span className="text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded">待开始</span>}
                   </div>
                   <div className="text-xs text-slate-500 truncate">
                     {candidate.departments.map(d => d.departmentName).join(' / ')}
@@ -347,7 +347,7 @@ export function AdminPage() {
               ))
             ) : (
               <div className="flex flex-col items-center justify-center h-32 text-slate-400 text-sm">
-                <p>暂无候选人</p>
+                <p>暂无参评对象</p>
                 <p>请先导入名单</p>
               </div>
             )}
@@ -356,7 +356,7 @@ export function AdminPage() {
 
         <section className="col-span-4 space-y-6">
           <div className="bg-white border border-slate-200 rounded-md p-8 text-center shadow-sm">
-            <div className="text-slate-500 text-sm font-medium mb-3 tracking-widest uppercase">当前正在面试</div>
+            <div className="text-slate-500 text-sm font-medium mb-3 tracking-widest uppercase">当前正在评分</div>
             
             {activeCandidate ? (
               <>
@@ -387,7 +387,7 @@ export function AdminPage() {
                   <button 
                     className="py-3 px-5 bg-white text-slate-700 rounded-md border border-slate-300 hover:bg-slate-50 font-medium transition-colors"
                     onClick={() => {
-                      if (confirm(`确定要结束当前面试，并切换到等待开始状态吗？`)) {
+                      if (confirm(`确定要结束当前评分，并切换到等待开始状态吗？`)) {
                         void clearActiveCandidate();
                       }
                     }}
@@ -400,11 +400,11 @@ export function AdminPage() {
                       const nextIndex = progress?.candidates?.findIndex(c => c.id === activeCandidate.id) ?? -1;
                       if (nextIndex !== -1 && nextIndex + 1 < (progress?.candidates?.length ?? 0)) {
                         const nextCandidate = progress!.candidates[nextIndex + 1];
-                        if (confirm(`确定要结束当前面试，并切换到下一位: #${nextCandidate.serialNo} ${nextCandidate.name} 吗？`)) {
+                        if (confirm(`确定要结束当前评分，并切换到下一位: #${nextCandidate.serialNo} ${nextCandidate.name} 吗？`)) {
                           void setActiveCandidate(nextCandidate.id);
                         }
                       } else {
-                        alert("已经是最后一位候选人了。");
+                        alert("已经是最后一位对象了。");
                       }
                     }}
                   >
@@ -414,8 +414,8 @@ export function AdminPage() {
               </>
             ) : (
               <div className="py-12">
-                <p className="text-slate-400 mb-4">没有正在进行的面试</p>
-                <p className="text-sm text-slate-500">请在左侧列表中点击一位候选人开始面试，已锁分候选人也可以回溯切回。</p>
+                <p className="text-slate-400 mb-4">没有正在进行的评分</p>
+                <p className="text-sm text-slate-500">请在左侧列表中点击一位对象开始评分，已锁分对象也可以回溯切回。</p>
               </div>
             )}
           </div>
