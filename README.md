@@ -1,79 +1,151 @@
 # Evaluation Scoring System / 活动评审评分系统
 
-一个适合面试、招新、竞选、答辩、竞赛评审、评优评先、社团/组织选拔等场景的线上评分系统。  
-A flexible online evaluation and scoring system for interviews, recruitment, elections, defenses, competitions, awards, clubs, and organization selection workflows.
+> 中英双语、可自托管、适合现场评审流程的轻量级评分系统。  
+> A bilingual, self-hostable scoring system for structured live evaluation workflows.
 
-本项目是一个已脱敏的开源版本，不包含任何真实参评对象、真实评分、真实设备绑定、真实口令、真实域名或生产数据库信息。  
-This is a sanitized open-source version. It does not include real participants, scores, device bindings, passcodes, domains, or production database identifiers.
+[![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-F38020?logo=cloudflare&logoColor=white)](https://workers.cloudflare.com/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=111)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
+[![Database](https://img.shields.io/badge/Database-D1-F38020)](https://developers.cloudflare.com/d1/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-## 技术栈 / Tech Stack
+适用于面试、招新、竞选、答辩、竞赛评审、评优评先、社团/组织选拔、项目路演、作品评分等场景。  
+Suitable for interviews, recruitment, elections, defenses, competitions, awards, club selection, project demos, and work reviews.
 
-- 前端 / Frontend: React + Vite + Tailwind CSS
-- API: Hono on Cloudflare Workers
-- 数据库 / Database: Cloudflare D1
-- Excel 导入导出 / Excel import & export: `xlsx`
+本仓库是已脱敏的开源版本，不包含真实参评对象、真实评分、真实设备绑定、真实口令、真实域名或生产数据库信息。  
+This is a sanitized open-source version. It contains no real participants, scores, device bindings, passcodes, domains, or production database identifiers.
 
-## 功能 / Features
+## 目录 / Contents
 
-- 五个独立入口：评分端、管理后台、排名页、展示大屏、注意事项页。  
-  Separate pages for scoring, administration, ranking, public display, and on-site instructions.
-- 评委、部员、管理员使用不同统一口令登录。  
-  Role-based passcode login for judges, members, and admins.
-- 首次进入后绑定姓名到当前浏览器设备。  
-  First-time scorer name binding to the current browser device.
-- 管理员控制当前正在展示/评分的参评对象。  
-  Admin-controlled active participant.
-- 切换保护：管理员切换下一位后，未提交的评分端不会被强制切走。  
-  Switch protection: unfinished scoring pages stay on the previous participant until submitted or manually skipped.
-- 5 个大项、15 个细项评分，也支持直接输入总分一键提交。  
-  5 sections and 15 scoring items, plus quick total-score submission.
-- 部门单独排名，不生成总榜。  
-  Department-only rankings, no global ranking.
-- 总成绩公式：`评委均分 × 0.7 + 部员均分 × 0.3`。  
-  Final score: `judge average x 0.7 + member average x 0.3`.
-- 管理后台支持导入参评名单、切换当前对象、管理设备、查看/修改/废弃评分。  
-  Admin tools for participant import, active participant control, device management, score review, score edit, and score discard.
-- 展示大屏不展示分数，只展示当前对象和参评进度。  
-  Public display screen shows the current participant and participation progress without exposing scores.
+- [项目亮点 / Highlights](#项目亮点--highlights)
+- [为什么不是普通表单 / Why Not Just Forms](#为什么不是普通表单--why-not-just-forms)
+- [系统架构 / Architecture](#系统架构--architecture)
+- [现场流程 / On-site Workflow](#现场流程--on-site-workflow)
+- [评分模型 / Scoring Model](#评分模型--scoring-model)
+- [页面入口 / Pages](#页面入口--pages)
+- [快速开始 / Quick Start](#快速开始--quick-start)
+- [部署 / Deployment](#部署--deployment)
+- [文档 / Documentation](#文档--documentation)
 
-## 项目优势 / Why This Project
+## 项目亮点 / Highlights
 
-很多活动可以用问卷、投票工具或 Excel 临时完成评分，但这些工具通常缺少现场评审需要的流程控制、权限隔离、设备约束和实时排名。本项目更适合需要多人评分、现场切换对象、按类别排名、保留审计记录的正式评审场景。  
-Many events can be scored with forms, polling tools, or spreadsheets, but those tools often lack on-site flow control, role separation, device constraints, auditability, and real-time categorized rankings. This project is designed for structured evaluation workflows with multiple scorer groups.
+| 能力 / Capability | 说明 / Description |
+| --- | --- |
+| 现场流程控制 / Live flow control | 管理员控制当前对象，评分端跟随现场节奏，不容易打错对象。 Admin controls the active participant so scorers follow the live process. |
+| 多身份评分 / Multiple scorer groups | 评委、成员、观众等身份可按不同权重参与成绩计算。 Different scorer groups can use different weights. |
+| 分类排名 / Category rankings | 支持按部门、岗位、类别、赛道分别排名，不强制总榜。 Rank by department, position, category, or track without forcing a global leaderboard. |
+| 移动端友好 / Mobile-first scoring | 评分端适合手机操作，支持逐项评分和总分一键提交。 Mobile-friendly scoring with detailed item scores or quick total submission. |
+| 防重复与审计 / Duplicate control and audit | 设备绑定、单对象唯一有效评分、锁分、废弃评分、审计日志。 Device binding, one effective score per participant, score locks, discard records, and audit logs. |
+| 大屏展示 / Public display | 展示当前对象和参评进度，不公开分数、均分或个人评价。 Display current progress without exposing sensitive scores. |
+| Cloudflare 低成本部署 / Low-cost Cloudflare deployment | Workers + D1 + static assets，适合短期活动和轻量组织流程。 Workers + D1 + static assets for lightweight event operations. |
 
-核心优点 / Key advantages:
+## 为什么不是普通表单 / Why Not Just Forms
 
-- **流程控制更强 / Stronger flow control**  
-  管理员统一控制当前对象，评分端只围绕当前对象提交，避免评委提前或误给其他对象打分。  
-  Admins control the active participant, preventing scorers from accidentally scoring the wrong person or item.
+| 常见方案 / Alternative | 痛点 / Limitation | 本项目 / This project |
+| --- | --- | --- |
+| 问卷/表单 / Forms | 容易选错对象，统计和排名要后期整理。 Easy to score the wrong participant; ranking requires manual cleanup. | 当前对象由管理员控制，系统自动汇总排名。 Admin-controlled participant and automatic rankings. |
+| 投票工具 / Polling tools | 更适合投票，不适合多维度加权评分。 Better for voting than weighted multi-dimensional scoring. | 支持评分项、身份权重、分类排名。 Supports scoring items, scorer weights, and category rankings. |
+| Excel 手工统计 / Spreadsheets | 现场慢、易错、无法自然实时展示。 Slow on site, error-prone, not naturally real-time. | 在线提交、实时排名、结束后导出 Excel。 Online submission, real-time ranking, final Excel export. |
+| 账号系统 / Account systems | 短期活动建账号成本高。 Too much account setup for short events. | 统一口令 + 首次姓名绑定设备。 Passcodes plus first-time device binding. |
+| 公开排名屏 / Public leaderboards | 容易暴露分数和个人评价。 Can expose scores and judgments. | 展示屏只显示进度，不显示分数。 Display screen shows progress only. |
 
-- **评分端更适合现场使用 / On-site mobile-first scoring**  
-  支持 15 个细项评分，也支持直接输入总分一键提交，适合严谨评分和快速现场评分两种节奏。  
-  Supports detailed item scoring and quick total-score submission for both rigorous and fast-paced events.
+更多说明 / More details: [docs/WHY.md](docs/WHY.md)
 
-- **天然区分评分身份 / Built-in scorer groups**  
-  评委和普通成员可以用不同权重参与计算，例如 `评委均分 × 0.7 + 成员均分 × 0.3`。  
-  Different scorer groups can be weighted differently, for example `judge average x 0.7 + member average x 0.3`.
+## 系统架构 / Architecture
 
-- **按部门、类别或赛道单独排名 / Category-based ranking**  
-  不强制生成总榜，一个对象可以同时进入两个类别榜单，适合多志愿、多岗位、多赛道场景。  
-  No forced global ranking. A participant can appear in multiple category lists, useful for multi-track or multi-choice workflows.
+```mermaid
+flowchart LR
+    subgraph Browser["浏览器 / Browser"]
+        Score["/score\n评分端 / Scorer"]
+        Admin["/admin\n管理后台 / Admin"]
+        Ranking["/ranking\n排名与分数管理 / Ranking"]
+        Display["/display\n展示大屏 / Display"]
+        Notice["/notice\n注意事项 / Notice"]
+    end
 
-- **减少刷分和误操作 / Reduced duplicate scoring and mistakes**  
-  设备绑定、单对象单设备唯一有效评分、锁分、废弃评分和后台审计记录，让现场管理更可控。  
-  Device binding, one active score per device and participant, score locking, score discard, and audit logs improve control.
+    subgraph Cloudflare["Cloudflare"]
+        Assets["Static Assets\nReact + Vite"]
+        Worker["Hono Worker\n/api/*"]
+        D1[(D1 Database)]
+    end
 
-- **展示大屏不泄露分数 / Public display without score exposure**  
-  `/display` 只展示当前对象和参评进度，不暴露均分、排名或个人评分。  
-  `/display` shows current progress without exposing averages, rankings, or individual scores.
+    Score --> Assets
+    Admin --> Assets
+    Ranking --> Assets
+    Display --> Assets
+    Notice --> Assets
+    Assets --> Worker
+    Worker --> D1
+```
 
-- **开源可自托管 / Open-source and self-hostable**  
-  基于 Cloudflare Workers + D1，部署成本低，适合短期活动、校内活动、社团评审和轻量组织流程。  
-  Built on Cloudflare Workers + D1, making it low-cost and suitable for short-term events and lightweight organizational workflows.
+## 现场流程 / On-site Workflow
 
-更完整的对比说明 / More details: [docs/WHY.md](docs/WHY.md)
+```mermaid
+sequenceDiagram
+    participant Admin as 管理员 / Admin
+    participant Scorer as 评分人 / Scorer
+    participant Worker as Worker API
+    participant D1 as D1
+    participant Screen as 展示大屏 / Display
 
-## 页面 / Pages
+    Admin->>Worker: 导入参评名单 / Import participants
+    Worker->>D1: 保存名单和类别 / Save participants and categories
+    Scorer->>Worker: 输入口令并绑定姓名 / Login and bind name
+    Worker->>D1: 记录设备绑定 / Store device binding
+    Admin->>Worker: 切换当前对象 / Set active participant
+    Worker->>D1: 锁定上一位并更新当前对象 / Lock previous and activate next
+    Scorer->>Worker: 提交评分 / Submit score
+    Worker->>D1: 保存明细、总分、审计日志 / Save score and audit
+    Screen->>Worker: 查询展示状态 / Fetch display status
+    Worker->>D1: 查询进度 / Read progress
+```
+
+## 数据流 / Data Flow
+
+```mermaid
+flowchart TD
+    Import["Excel 导入名单\nExcel import"] --> Candidates["参评对象 + 类别映射\nParticipants + categories"]
+    Active["管理员切换当前对象\nAdmin active control"] --> Scores["评分提交\nScore submissions"]
+    Bindings["姓名与设备绑定\nName + device binding"] --> Scores
+    Scores --> Audit["审计日志\nAudit logs"]
+    Scores --> Ranking["分类排名\nCategory rankings"]
+    Scores --> Export["Excel 导出\nExcel export"]
+    Active --> Display["展示大屏\nProgress display"]
+```
+
+## 评分模型 / Scoring Model
+
+> 当前仓库里的 5 大项、15 细项只是默认示例模板，不是系统必须固定的评分规则。  
+> The 5 sections and 15 items in this repository are default examples, not a required fixed scoring model.
+
+默认示例 / Default example:
+
+| 大项 / Section | 分值 / Points |
+| --- | ---: |
+| 仪容仪表与言行举止 / Appearance and conduct | 15 |
+| 语言表达能力 / Communication | 20 |
+| 认知与能力匹配 / Role fit | 30 |
+| 思想态度与素养 / Attitude | 20 |
+| 临场应变与综合表现 / On-site performance | 15 |
+
+你可以把它替换成其他模型，例如：  
+You can replace it with another model, for example:
+
+- 项目路演：创新性、商业价值、技术实现、表达答辩、落地可行性
+- 竞赛评审：作品完成度、创意表达、技术难度、现场答辩、综合表现
+- 招新选拔：岗位匹配、沟通表达、责任意识、执行经验、团队协作
+- 课程答辩：选题意义、方法过程、成果质量、答辩表现、材料规范
+
+自定义说明 / Customization guide: [docs/SCORING_MODEL.md](docs/SCORING_MODEL.md)
+
+最终成绩默认公式 / Default final score formula:
+
+```text
+评委均分 * 0.7 + 成员均分 * 0.3
+judge_average * 0.7 + member_average * 0.3
+```
+
+## 页面入口 / Pages
 
 | 路径 / Path | 用途 / Purpose |
 | --- | --- |
@@ -101,9 +173,6 @@ npm run dev
 
 ## 环境变量 / Environment Variables
 
-复制 `.dev.vars.example` 为 `.dev.vars`，生产环境请在 Cloudflare Worker Secrets 中配置。  
-Copy `.dev.vars.example` to `.dev.vars`. For production, configure the same values as Cloudflare Worker secrets.
-
 ```env
 APP_SECRET=replace-with-a-long-random-secret
 JUDGE_PASSCODE=change-this-judge-passcode
@@ -114,95 +183,45 @@ ADMIN_PASSCODE=change-this-admin-passcode
 生产环境请使用足够长、不可猜测、每次活动单独设置的口令。  
 Use long, unpredictable, event-specific passcodes in production.
 
-## 数据库 / Database
-
-创建 D1 数据库 / Create a D1 database:
+## 部署 / Deployment
 
 ```bash
 npx wrangler d1 create evaluation-scoring
-```
-
-把返回的 `database_id` 填入 `wrangler.toml`，然后执行迁移。  
-Put the returned `database_id` into `wrangler.toml`, then apply migrations.
-
-```bash
 npm run db:migrate:local
 npx wrangler d1 migrations apply evaluation-scoring --remote
+npm run build
+npx wrangler deploy
 ```
 
-## 参评名单导入格式 / Participant Import Format
+详细部署说明 / Full guide: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
 
-管理后台导入 Excel，固定读取前四列：  
-The admin page imports Excel files and reads the first four columns:
+## 数据导入导出 / Import and Export
+
+参评名单导入 Excel 前四列 / Import participants from the first four Excel columns:
 
 | 列 / Column | 含义 / Meaning |
 | --- | --- |
 | 第 1 列 / Column 1 | 序号 / Serial number |
 | 第 2 列 / Column 2 | 姓名 / Participant name |
-| 第 3 列 / Column 3 | 第一意向部门 / First-choice department |
-| 第 4 列 / Column 4 | 第二意向部门 / Second-choice department |
-
-第二意向为空或 `无` 时，不建立第二部门排名映射。  
-If the second choice is blank or `无`, no second-department ranking entry is created.
+| 第 3 列 / Column 3 | 第一意向部门/类别 / First-choice department/category |
+| 第 4 列 / Column 4 | 第二意向部门/类别 / Second-choice department/category |
 
 安全示例模板 / Safe sample template: `examples/participants-template.csv`
 
-## 评分模型 / Scoring Model
-
-单次评分为 100 分制。  
-Each submitted score is out of 100.
-
-| 大项 / Section | 分值 / Points |
-| --- | ---: |
-| 仪容仪表与言行举止 / Appearance and conduct | 15 |
-| 语言表达能力 / Communication | 20 |
-| 认知与能力匹配 / Role fit | 30 |
-| 思想态度与素养 / Attitude | 20 |
-| 临场应变与综合表现 / On-site performance | 15 |
-
-最终成绩 / Final score:
-
-```text
-评委均分 * 0.7 + 部员均分 * 0.3
-judge_average * 0.7 + member_average * 0.3
-```
-
-如果某一身份组尚未提交，则暂时按已有身份组均分计算。  
-If only one role group has submitted, that group average is used temporarily.
-
-## 常用命令 / Scripts
-
-```bash
-npm run dev              # 本地开发 / local development
-npm run build            # 类型检查并构建 / type-check and build
-npm run check            # 单元测试 / unit tests
-npm run lint             # 代码检查 / lint
-npm run db:migrate:local # 本地 D1 迁移 / local D1 migrations
-```
-
-## 数据导出 / Data Export
-
-活动结束后可以导出数据库数据。  
-After an event, export D1 data with:
+活动结束后导出 / Export after the event:
 
 ```bash
 D1_DATABASE_NAME=evaluation-scoring node scripts/export-interview-data.mjs
 ```
 
-导出内容包括：部门排名、参评对象汇总、有效评分、废弃评分、设备绑定、当前对象状态和审计日志。  
-The export includes rankings, participant summaries, effective scores, discarded scores, device bindings, active participant state, and audit logs.
+## 文档 / Documentation
 
-## 部署 / Deployment
-
-详见 / See: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
-
-## 架构 / Architecture
-
-详见 / See: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
-
-## 安全与隐私 / Security and Privacy
-
-详见 / See: [docs/SECURITY.md](docs/SECURITY.md)
+- [为什么选择这个系统 / Why this project](docs/WHY.md)
+- [评分模型自定义 / Scoring model customization](docs/SCORING_MODEL.md)
+- [部署指南 / Deployment guide](docs/DEPLOYMENT.md)
+- [架构说明 / Architecture](docs/ARCHITECTURE.md)
+- [安全与隐私 / Security and privacy](docs/SECURITY.md)
+- [贡献指南 / Contributing](CONTRIBUTING.md)
 
 ## 开源协议 / License
 

@@ -9,6 +9,34 @@ Browser / 浏览器
   -> Cloudflare D1 / 数据库
 ```
 
+```mermaid
+flowchart LR
+    subgraph Frontend["React Pages / 前端页面"]
+        Score["/score"]
+        Admin["/admin"]
+        Ranking["/ranking"]
+        Display["/display"]
+        Notice["/notice"]
+    end
+
+    subgraph Worker["Cloudflare Worker"]
+        Auth["Auth APIs"]
+        ScoreApi["Score APIs"]
+        AdminApi["Admin APIs"]
+        RankingApi["Ranking APIs"]
+        DisplayApi["Display APIs"]
+    end
+
+    D1[(Cloudflare D1)]
+
+    Frontend --> Worker
+    Auth --> D1
+    ScoreApi --> D1
+    AdminApi --> D1
+    RankingApi --> D1
+    DisplayApi --> D1
+```
+
 ## 主要模块 / Main Areas
 
 | 模块 / Area | 文件 / Files |
@@ -32,6 +60,53 @@ Browser / 浏览器
 - `active_candidate`: 当前正在展示或评分的参评对象 / currently active participant.
 - `audit_logs`: 操作审计记录 / operational and security audit trail.
 - `system_settings`: 系统设置、封禁记录、口令哈希等 / runtime settings, blocked-device records, and passcode hashes.
+
+```mermaid
+erDiagram
+    candidates ||--o{ candidate_departments : has
+    candidates ||--o{ scores : receives
+    device_bindings ||--o{ scores : submits
+    candidates ||--o| active_candidate : active
+
+    candidates {
+        integer id
+        integer serial_no
+        text name
+        text created_at
+    }
+
+    candidate_departments {
+        integer id
+        integer candidate_id
+        text department_name
+        text intent_type
+    }
+
+    device_bindings {
+        integer id
+        text name
+        text role
+        text device_token
+        text fingerprint_hash
+        text status
+    }
+
+    scores {
+        integer id
+        integer candidate_id
+        integer binding_id
+        text role
+        integer grand_total
+        text locked_at
+        text discarded_at
+    }
+
+    active_candidate {
+        integer id
+        integer candidate_id
+        text activated_at
+    }
+```
 
 ## 排名逻辑 / Ranking Logic
 
