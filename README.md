@@ -36,6 +36,43 @@ This is a sanitized open-source version. It does not include real participants, 
 - 展示大屏不展示分数，只展示当前对象和参评进度。  
   Public display screen shows the current participant and participation progress without exposing scores.
 
+## 项目优势 / Why This Project
+
+很多活动可以用问卷、投票工具或 Excel 临时完成评分，但这些工具通常缺少现场评审需要的流程控制、权限隔离、设备约束和实时排名。本项目更适合需要多人评分、现场切换对象、按类别排名、保留审计记录的正式评审场景。  
+Many events can be scored with forms, polling tools, or spreadsheets, but those tools often lack on-site flow control, role separation, device constraints, auditability, and real-time categorized rankings. This project is designed for structured evaluation workflows with multiple scorer groups.
+
+核心优点 / Key advantages:
+
+- **流程控制更强 / Stronger flow control**  
+  管理员统一控制当前对象，评分端只围绕当前对象提交，避免评委提前或误给其他对象打分。  
+  Admins control the active participant, preventing scorers from accidentally scoring the wrong person or item.
+
+- **评分端更适合现场使用 / On-site mobile-first scoring**  
+  支持 15 个细项评分，也支持直接输入总分一键提交，适合严谨评分和快速现场评分两种节奏。  
+  Supports detailed item scoring and quick total-score submission for both rigorous and fast-paced events.
+
+- **天然区分评分身份 / Built-in scorer groups**  
+  评委和普通成员可以用不同权重参与计算，例如 `评委均分 × 0.7 + 成员均分 × 0.3`。  
+  Different scorer groups can be weighted differently, for example `judge average x 0.7 + member average x 0.3`.
+
+- **按部门、类别或赛道单独排名 / Category-based ranking**  
+  不强制生成总榜，一个对象可以同时进入两个类别榜单，适合多志愿、多岗位、多赛道场景。  
+  No forced global ranking. A participant can appear in multiple category lists, useful for multi-track or multi-choice workflows.
+
+- **减少刷分和误操作 / Reduced duplicate scoring and mistakes**  
+  设备绑定、单对象单设备唯一有效评分、锁分、废弃评分和后台审计记录，让现场管理更可控。  
+  Device binding, one active score per device and participant, score locking, score discard, and audit logs improve control.
+
+- **展示大屏不泄露分数 / Public display without score exposure**  
+  `/display` 只展示当前对象和参评进度，不暴露均分、排名或个人评分。  
+  `/display` shows current progress without exposing averages, rankings, or individual scores.
+
+- **开源可自托管 / Open-source and self-hostable**  
+  基于 Cloudflare Workers + D1，部署成本低，适合短期活动、校内活动、社团评审和轻量组织流程。  
+  Built on Cloudflare Workers + D1, making it low-cost and suitable for short-term events and lightweight organizational workflows.
+
+更完整的对比说明 / More details: [docs/WHY.md](docs/WHY.md)
+
 ## 页面 / Pages
 
 | 路径 / Path | 用途 / Purpose |
