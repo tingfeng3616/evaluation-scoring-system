@@ -1,0 +1,4 @@
+APP_SECRET=replace-with-a-long-random-secret
+JUDGE_PASSCODE=change-this-judge-passcode
+MEMBER_PASSCODE=change-this-member-passcode
+ADMIN_PASSCODE=change-this-admin-passcode
